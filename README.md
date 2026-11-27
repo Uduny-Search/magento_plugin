@@ -11,6 +11,12 @@ Uduny/Typesense Search Integration module for Magento 2. This module provides a 
 - **Category Exclusion**: Exclude products from specific categories
 - **Authentication**: Token-based authentication with IP whitelist support
 - **Multi-store Support**: Configure per store view
+- **Multi-Currency Pricing**: Optional `prices` array per location/currency, with exchange-rate conversion and website-scoped indexed prices
+- **Configurable Products**: Variants exported with their own price, stock, image, URL and option combinations
+
+### Storefront Search Widget
+- **UdSearch Embed**: Injects the Uduny search script plus `window.UdunySearch` and `window.UdunyStoreContext` (country/currency)
+- **Trigger Selectors**: Configure which elements open the search on click or typing
 
 ### Event Tracking
 - **Session Tracking**: Automatic session/customer mapping with unique Uduny tokens
@@ -20,8 +26,8 @@ Uduny/Typesense Search Integration module for Magento 2. This module provides a 
 
 ## Requirements
 
-- Magento 2.4.x
-- PHP 8.1 or higher
+- Magento 2.3.7 – 2.4.x (Mage-OS 1.x supported)
+- PHP 7.4 or higher
 
 ## Installation
 
@@ -42,10 +48,11 @@ bin/magento setup:di:compile
 bin/magento cache:flush
 ```
 
-### Composer Installation (if packaged)
+### Composer Installation (from GitHub)
 
 ```bash
-composer require unusualdope/module-uduny
+composer config repositories.uduny vcs https://github.com/Uduny-Search/magento_plugin.git
+composer require unusualdope/module-uduny:dev-main
 bin/magento setup:upgrade
 bin/magento setup:di:compile
 bin/magento cache:flush
@@ -70,8 +77,18 @@ Navigate to **Stores → Configuration → UnusualDope → Uduny Settings**
 | Setting | Description |
 |---------|-------------|
 | Script URL | URL of the Uduny search JavaScript to embed |
-| Export Image Width | Width of product images in export (pixels) |
-| Export Image Height | Height of product images in export (pixels) |
+| UdSearch Base URL | Search app base URL (optional; derived from Script URL if empty) |
+| Click Trigger Selectors | Comma-separated CSS selectors that open search on click |
+| Typing Trigger Selectors | Comma-separated CSS selectors that open search on typing (default `#search`) |
+| Export Image Width | Width of product images in export (pixels, default 300) |
+| Export Image Height | Height of product images in export (pixels, default 300) |
+
+### Export & Multi-Currency Settings
+
+| Setting | Description |
+|---------|-------------|
+| Multi-Price / Multi-Currency Export | `Auto-detect` (default): add `prices` only for multi-currency/multi-store setups. `Always`: always add `prices`. `Disabled`: never add `prices` |
+| Currency to Location Overrides | Optional `CURRENCY=COUNTRY` lines (e.g. `EUR=IT`, `USD=US`) for extra currencies on one store view |
 
 ## Usage
 
@@ -84,8 +101,9 @@ Navigate to **Stores → Configuration → UnusualDope → Uduny Settings**
    - **Slug**: URL identifier (used in API endpoint)
    - **Status Filter**: All / Enabled Only / Disabled Only
    - **Stock Filter**: All / In Stock / In Stock + Backorder
-   - **Category IDs**: Comma-separated category IDs (empty = all)
-   - **Brand IDs**: Comma-separated brand attribute IDs (empty = all)
+   - **Include Categories**: Pick categories from the tree (empty = all)
+   - **Exclude Categories**: Products in these categories are left out
+   - **Brands / Manufacturers**: Searchable multiselect (empty = all)
    - **Store View**: Which store to export from
    - **Active**: Enable/disable this export list
 
@@ -111,38 +129,49 @@ curl -X GET "https://your-store.com/uduny/export/all-products?token=your-token"
 #### Example Response
 ```json
 {
-  "success": true,
-  "export_list": {
-    "id": 1,
-    "name": "All Products",
-    "slug": "all-products"
-  },
-  "count": 150,
-  "products": [
+  "items": [
     {
-      "id": 1,
-      "sku": "PRODUCT-001",
+      "id": "1",
+      "reference": "PRODUCT-001",
       "name": "Sample Product",
-      "description": "Product description",
-      "short_description": "Short desc",
       "url": "https://store.com/product.html",
       "image": "https://store.com/media/catalog/product/image.jpg",
+      "description": "Product description",
+      "date_created": "2024-01-15 10:30:00",
       "price": 99.99,
-      "special_price": 79.99,
-      "final_price": 79.99,
-      "currency": "USD",
-      "brand": "Brand Name",
-      "categories": [2, 3, 5],
-      "in_stock": true,
-      "qty": 100,
-      "meta_title": "Product Meta Title",
-      "meta_description": "Product meta description",
-      "created_at": "2024-01-15 10:30:00",
-      "updated_at": "2024-12-09 14:22:00"
+      "sale_price": 79.99,
+      "quantity": 100,
+      "categories": ["Men", "T-Shirts"],
+      "brands": ["Brand Name"],
+      "attributes": { "material": "Cotton" },
+      "prices": [
+        { "location": "US", "currency": "USD", "price": 99.99, "sale": 79.99 },
+        { "location": "IT", "currency": "EUR", "price": 92.50, "sale": 73.90 }
+      ],
+      "variants": [
+        {
+          "variant_id": "12",
+          "name": "Sample Product - Blue / M",
+          "price": 99.99,
+          "sale": 79.99,
+          "quantity": 20,
+          "image": "https://store.com/media/catalog/product/blue.jpg",
+          "url": "https://store.com/product.html?color=Blue&size=M",
+          "combinations": [
+            { "group": "Color", "value": "Blue" },
+            { "group": "Size", "value": "M" }
+          ]
+        }
+      ]
     }
   ]
 }
 ```
+
+Optional fields:
+- `attributes` is included only when the product has descriptive user-defined attributes.
+- `prices` follows the **Multi-Price / Multi-Currency Export** setting. Variants get their own `prices` too.
+- `variants` is included only for configurable products.
 
 #### Error Responses
 
@@ -153,6 +182,7 @@ curl -X GET "https://your-store.com/uduny/export/all-products?token=your-token"
 | 401 | IP not allowed | Client IP not in whitelist |
 | 403 | Export list is disabled | Export list is_active = false |
 | 404 | Export list not found | Invalid slug |
+| 500 | Internal server error | Unexpected error (details in debug log) |
 | 503 | Module is disabled | Module not enabled in config |
 
 ### Debug Logs
@@ -347,6 +377,14 @@ app/code/UnusualDope/Uduny/
 ```
 
 ## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for full details.
+
+### 1.2.0
+- Uduny JSON feed format (`{ "items": [...] }`) with multi-currency `prices` and configurable `variants`
+- Storefront UdSearch widget embed with click/typing trigger settings
+- Magento 2.3.7 – 2.4.x and PHP 7.4+ compatibility
+- Fixed frontend router 404s, RequireJS errors and export list form layout
 
 ### 1.1.0
 - **Event Tracking**
