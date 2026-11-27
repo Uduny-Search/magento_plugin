@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Module Declaration
+ *
+ * This file declares your module to Magento and specifies:
+ * - Module name (must match registration.php)
+ * - Dependencies (which modules must load before this one)
+ *
+ * The <sequence> tag is important:
+ * - It ensures dependent modules are loaded FIRST
+ * - Your module can then use their functionality safely
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+
+    <module name="UnusualDope_Uduny">
+        <!--
+            Dependencies (loaded before our module):
+            - Magento_Store: We need store functionality (multi-store support)
+            - Magento_Catalog: We need product data access
+            - Magento_Backend: We'll have admin pages
+        -->
+        <sequence>
+            <module name="Magento_Store"/>
+            <module name="Magento_Catalog"/>
+            <module name="Magento_ConfigurableProduct"/>
+            <module name="Magento_Directory"/>
+            <module name="Magento_Backend"/>
+        </sequence>
+    </module>
+
+</config>
+

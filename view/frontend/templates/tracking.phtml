@@ -1,0 +1,49 @@
+<?php
+/**
+ * Uduny Storefront Widget & Session Tracking Template
+ *
+ * Outputs:
+ *   1. window.UdunyStoreContext (when multi-currency/multi-location or pricelist mode is active)
+ *   2. window.UdunySearch + deferred UdSearch search.js (when Script URL is configured)
+ *   3. Magento text/x-magento-init session tracking initializer
+ *
+ * @var \UnusualDope\Uduny\Block\Tracking $block
+ * @var \Magento\Framework\Escaper|null $escaper
+ * @var \Magento\Framework\View\Helper\SecureHtmlRenderer|null $secureRenderer
+ */
+
+if (!$block->shouldTrack()) {
+    return;
+}
+
+$escaperInstance = isset($escaper) ? $escaper : $block;
+$scriptUrl = $block->getScriptUrl();
+$outputStoreContext = $block->shouldOutputStoreContext();
+
+$inlineLines = [];
+if ($outputStoreContext) {
+    $inlineLines[] = 'window.UdunyStoreContext = ' . $block->getStoreContextJson() . ';';
+}
+if ($scriptUrl !== '') {
+    $inlineLines[] = 'window.UdunySearch = ' . $block->getSearchConfigJson() . ';';
+}
+?>
+<?php if (!empty($inlineLines)): ?>
+    <?php $inlineScript = "\n" . implode("\n", $inlineLines) . "\n"; ?>
+    <?php if (isset($secureRenderer)): ?>
+        <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $inlineScript, false) ?>
+    <?php else: ?>
+        <script><?= /* @noEscape */ $inlineScript ?></script>
+    <?php endif; ?>
+<?php endif; ?>
+<?php if ($scriptUrl !== ''): ?>
+    <script src="<?= $escaperInstance->escapeUrl($scriptUrl) ?>" defer="defer"></script>
+<?php endif; ?>
+
+<script type="text/x-magento-init">
+{
+    "*": {
+        "UnusualDope_Uduny/js/session-tracking": <?= /* @noEscape */ $block->getConfigJson() ?>
+    }
+}
+</script>

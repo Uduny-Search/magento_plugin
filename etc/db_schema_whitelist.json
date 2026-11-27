@@ -1,0 +1,48 @@
+{
+    "_comment": "Uduny Module - Database Schema Whitelist",
+
+    "uduny_export_list": {
+        "column": {
+            "entity_id": true,
+            "slug": true,
+            "name": true,
+            "status_filter": true,
+            "stock_filter": true,
+            "brand_ids": true,
+            "category_ids": true,
+            "exclude_category_ids": true,
+            "store_id": true,
+            "is_active": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "UDUNY_EXPORT_LIST_SLUG_UNIQUE": true
+        },
+        "index": {
+            "UDUNY_EXPORT_LIST_STORE_ID": true,
+            "UDUNY_EXPORT_LIST_IS_ACTIVE": true
+        }
+    },
+
+    "uduny_session_tracking": {
+        "column": {
+            "entity_id": true,
+            "session_id": true,
+            "customer_id": true,
+            "uduny_token": true,
+            "store_id": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "UDUNY_SESSION_TRACKING_SESSION_UNIQUE": true
+        },
+        "index": {
+            "UDUNY_SESSION_TRACKING_CUSTOMER_ID": true,
+            "UDUNY_SESSION_TRACKING_UDUNY_TOKEN": true
+        }
+    }
+}

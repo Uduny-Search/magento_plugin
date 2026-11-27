@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Admin Menu Configuration
+ *
+ * This file defines menu items in the Admin sidebar.
+ *
+ * Menu structure:
+ *   - Parent menus have no 'action' (they just expand)
+ *   - Child menus have 'action' pointing to a controller route
+ *
+ * Key attributes:
+ *   - id: Unique identifier (VendorName_ModuleName::identifier)
+ *   - title: Display text
+ *   - module: Module that owns this menu
+ *   - sortOrder: Position (lower = higher in list)
+ *   - parent: ID of parent menu (for sub-menus)
+ *   - action: Admin route (controller path)
+ *   - resource: ACL permission required to see this menu
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+
+    <menu>
+        <!--
+            PARENT MENU: Uduny
+            This appears in the main sidebar
+            No 'action' because it just expands to show children
+        -->
+        <add id="UnusualDope_Uduny::uduny"
+             title="Uduny"
+             translate="title"
+             module="UnusualDope_Uduny"
+             sortOrder="100"
+             resource="UnusualDope_Uduny::uduny"/>
+
+        <!--
+            CHILD MENU: Export Lists
+            action="uduny/exportlist/index" means:
+              - Route: uduny (defined in routes.xml)
+              - Controller: Exportlist
+              - Action: Index
+        -->
+        <add id="UnusualDope_Uduny::exportlist"
+             title="Export Lists"
+             translate="title"
+             module="UnusualDope_Uduny"
+             sortOrder="10"
+             parent="UnusualDope_Uduny::uduny"
+             action="uduny/exportlist/index"
+             resource="UnusualDope_Uduny::exportlist"/>
+
+        <!--
+            CHILD MENU: Debug Logs
+            For viewing and managing debug logs
+        -->
+        <add id="UnusualDope_Uduny::debug"
+             title="Debug Logs"
+             translate="title"
+             module="UnusualDope_Uduny"
+             sortOrder="20"
+             parent="UnusualDope_Uduny::uduny"
+             action="uduny/debug/index"
+             resource="UnusualDope_Uduny::debug"/>
+
+        <!--
+            CHILD MENU: Configuration
+            Links directly to system configuration page
+            Uses Magento's config section action format
+        -->
+        <add id="UnusualDope_Uduny::config_link"
+             title="Configuration"
+             translate="title"
+             module="UnusualDope_Uduny"
+             sortOrder="30"
+             parent="UnusualDope_Uduny::uduny"
+             action="adminhtml/system_config/edit/section/uduny"
+             resource="UnusualDope_Uduny::config"/>
+
+    </menu>
+
+</config>
+

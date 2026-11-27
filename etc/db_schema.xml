@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Uduny Module - Database Schema Definition
+ *
+ * This file defines all database tables for the Uduny module.
+ * Magento 2.3+ uses Declarative Schema instead of InstallSchema/UpgradeSchema.
+ *
+ * Run 'bin/magento setup:upgrade' to apply changes.
+ *
+ * TABLE OF CONTENTS:
+ *   1. EXPORT LIST - Product export configurations
+ *   2. SESSION TRACKING - Visitor session & event tracking
+ */
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+
+
+    <!-- ╔═══════════════════════════════════════════════════════════════════════╗
+         ║                                                                       ║
+         ║                    SECTION 1: EXPORT LIST                             ║
+         ║                                                                       ║
+         ║   Purpose: Store configurations for product export endpoints          ║
+         ║   API: /uduny/export/{slug}                                          ║
+         ║                                                                       ║
+         ╚═══════════════════════════════════════════════════════════════════════╝ -->
+
+    <table name="uduny_export_list" resource="default" engine="innodb" comment="Uduny Export Lists">
+
+        <!-- Primary Key -->
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="Entity ID"/>
+
+        <!-- Identification -->
+        <column xsi:type="varchar" name="slug" length="255" nullable="false" comment="URL Slug"/>
+        <column xsi:type="varchar" name="name" length="255" nullable="false" comment="Export List Name"/>
+
+        <!-- Filters -->
+        <column xsi:type="varchar" name="status_filter" length="50" nullable="false" default="enabled" comment="Product Status Filter (all/enabled/disabled)"/>
+        <column xsi:type="varchar" name="stock_filter" length="50" nullable="false" default="in_stock" comment="Stock Filter (all/in_stock/in_stock_backorder)"/>
+        <column xsi:type="text" name="brand_ids" nullable="true" comment="Brand IDs (comma-separated)"/>
+        <column xsi:type="text" name="category_ids" nullable="true" comment="Include Category IDs (comma-separated)"/>
+        <column xsi:type="text" name="exclude_category_ids" nullable="true" comment="Exclude Category IDs (comma-separated)"/>
+
+        <!-- Settings -->
+        <column xsi:type="smallint" name="store_id" unsigned="true" nullable="false" default="0" comment="Store ID"/>
+        <column xsi:type="boolean" name="is_active" nullable="false" default="true" comment="Is Active"/>
+
+        <!-- Timestamps -->
+        <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="true" comment="Updated At"/>
+
+        <!-- Constraints -->
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="UDUNY_EXPORT_LIST_SLUG_UNIQUE">
+            <column name="slug"/>
+        </constraint>
+
+        <!-- Indexes -->
+        <index referenceId="UDUNY_EXPORT_LIST_STORE_ID" indexType="btree">
+            <column name="store_id"/>
+        </index>
+        <index referenceId="UDUNY_EXPORT_LIST_IS_ACTIVE" indexType="btree">
+            <column name="is_active"/>
+        </index>
+
+    </table>
+
+
+    <!-- ╔═══════════════════════════════════════════════════════════════════════╗
+         ║                                                                       ║
+         ║                   SECTION 2: SESSION TRACKING                         ║
+         ║                                                                       ║
+         ║   Purpose: Track visitor sessions for event analytics                 ║
+         ║   Flow: Page Load → Session Created → Events Tracked                  ║
+         ║                                                                       ║
+         ╚═══════════════════════════════════════════════════════════════════════╝ -->
+
+    <table name="uduny_session_tracking" resource="default" engine="innodb" comment="Uduny Session Tracking">
+
+        <!-- Primary Key -->
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="Entity ID"/>
+
+        <!-- Session Data -->
+        <column xsi:type="varchar" name="session_id" length="255" nullable="false" comment="Magento Session ID"/>
+        <column xsi:type="int" name="customer_id" unsigned="true" nullable="true" comment="Customer ID (null if guest)"/>
+        <column xsi:type="varchar" name="uduny_token" length="255" nullable="true" comment="Uduny Session Token"/>
+
+        <!-- Settings -->
+        <column xsi:type="smallint" name="store_id" unsigned="true" nullable="false" default="0" comment="Store ID"/>
+
+        <!-- Timestamps -->
+        <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP" comment="Session Created At"/>
+        <column xsi:type="timestamp" name="updated_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="true" comment="Last Activity"/>
+
+        <!-- Constraints -->
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="UDUNY_SESSION_TRACKING_SESSION_UNIQUE">
+            <column name="session_id"/>
+        </constraint>
+
+        <!-- Indexes -->
+        <index referenceId="UDUNY_SESSION_TRACKING_CUSTOMER_ID" indexType="btree">
+            <column name="customer_id"/>
+        </index>
+        <index referenceId="UDUNY_SESSION_TRACKING_UDUNY_TOKEN" indexType="btree">
+            <column name="uduny_token"/>
+        </index>
+
+    </table>
+
+</schema>

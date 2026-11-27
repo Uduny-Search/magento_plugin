@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Frontend Events Configuration
+ *
+ * This file registers observers for frontend events.
+ * Observers listen to events and execute code when they fire.
+ *
+ * Events registered:
+ *   - checkout_cart_add_product_complete: When product is added to cart
+ *   - checkout_onepage_controller_success_action: When order is placed successfully
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+
+    <!-- ╔═══════════════════════════════════════════════════════════════════════╗
+         ║                    ADD TO CART EVENT                                  ║
+         ╚═══════════════════════════════════════════════════════════════════════╝ -->
+
+    <event name="checkout_cart_add_product_complete">
+        <observer name="uduny_add_to_cart_tracking"
+                  instance="UnusualDope\Uduny\Observer\AddToCartObserver"/>
+    </event>
+
+
+    <!-- ╔═══════════════════════════════════════════════════════════════════════╗
+         ║                    ORDER PLACED EVENT                                 ║
+         ╚═══════════════════════════════════════════════════════════════════════╝ -->
+
+    <event name="checkout_onepage_controller_success_action">
+        <observer name="uduny_order_place_tracking"
+                  instance="UnusualDope\Uduny\Observer\OrderPlaceObserver"/>
+    </event>
+
+</config>
+

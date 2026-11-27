@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Admin Routes Configuration
+ *
+ * This file defines the URL routing for admin controllers.
+ *
+ * When you access: /admin/uduny/exportlist/index
+ *   - "admin" = admin area (from Magento)
+ *   - "uduny" = frontName (defined below)
+ *   - "exportlist" = controller folder name
+ *   - "index" = action (Index.php controller)
+ *
+ * The route maps to: Controller/Adminhtml/Exportlist/Index.php
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+
+    <router id="admin">
+        <!--
+            Route definition:
+            - id: Unique identifier for this route
+            - frontName: The URL segment after /admin/
+        -->
+        <route id="uduny" frontName="uduny">
+            <module name="UnusualDope_Uduny" before="Magento_Backend"/>
+        </route>
+    </router>
+
+</config>
+

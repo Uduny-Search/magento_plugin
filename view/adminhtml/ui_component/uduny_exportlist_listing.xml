@@ -1,0 +1,211 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * UI Component: Export List Grid
+ *
+ * This defines the admin grid (data table) for Export Lists.
+ *
+ * Structure:
+ *   - dataSource: Where data comes from
+ *   - listingToolbar: Buttons, search, filters, pagination
+ *   - columns: Table columns
+ */
+-->
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+
+    <!--
+        ARGUMENT: Basic settings
+    -->
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">uduny_exportlist_listing.uduny_exportlist_listing_data_source</item>
+        </item>
+    </argument>
+
+    <!--
+        SETTINGS: Grid configuration
+    -->
+    <settings>
+        <spinner>uduny_exportlist_columns</spinner>
+        <deps>
+            <dep>uduny_exportlist_listing.uduny_exportlist_listing_data_source</dep>
+        </deps>
+        <buttons>
+            <button name="add">
+                <url path="*/*/new"/>
+                <class>primary</class>
+                <label translate="true">Add New Export List</label>
+            </button>
+        </buttons>
+    </settings>
+
+    <!--
+        DATA SOURCE: Provides data to the grid
+    -->
+    <dataSource name="uduny_exportlist_listing_data_source" component="Magento_Ui/js/grid/provider">
+        <settings>
+            <storageConfig>
+                <param name="indexField" xsi:type="string">entity_id</param>
+            </storageConfig>
+            <updateUrl path="mui/index/render"/>
+        </settings>
+        <aclResource>UnusualDope_Uduny::exportlist</aclResource>
+        <dataProvider class="UnusualDope\Uduny\Ui\DataProvider\ExportList\ListingDataProvider"
+                      name="uduny_exportlist_listing_data_source">
+            <settings>
+                <requestFieldName>id</requestFieldName>
+                <primaryFieldName>entity_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+
+    <!--
+        TOOLBAR: Search, filters, mass actions, pagination
+    -->
+    <listingToolbar name="listing_top">
+        <settings>
+            <sticky>true</sticky>
+        </settings>
+
+        <!-- Bookmarks (save grid state) -->
+        <bookmark name="bookmarks"/>
+
+        <!-- Column controls (show/hide columns) -->
+        <columnsControls name="columns_controls"/>
+
+        <!-- Full-text search -->
+        <filterSearch name="fulltext"/>
+
+        <!-- Filters -->
+        <filters name="listing_filters"/>
+
+        <!-- Mass actions dropdown -->
+        <massaction name="listing_massaction" component="Magento_Ui/js/grid/tree-massactions">
+            <action name="delete">
+                <settings>
+                    <confirm>
+                        <message translate="true">Are you sure you want to delete the selected export list(s)?</message>
+                        <title translate="true">Delete Export Lists</title>
+                    </confirm>
+                    <url path="uduny/exportlist/massDelete"/>
+                    <type>delete</type>
+                    <label translate="true">Delete</label>
+                </settings>
+            </action>
+            <action name="enable">
+                <settings>
+                    <url path="uduny/exportlist/massStatus/status/1"/>
+                    <type>enable</type>
+                    <label translate="true">Enable</label>
+                </settings>
+            </action>
+            <action name="disable">
+                <settings>
+                    <url path="uduny/exportlist/massStatus/status/0"/>
+                    <type>disable</type>
+                    <label translate="true">Disable</label>
+                </settings>
+            </action>
+        </massaction>
+
+        <!-- Pagination -->
+        <paging name="listing_paging"/>
+    </listingToolbar>
+
+    <!--
+        COLUMNS: Table columns definition
+    -->
+    <columns name="uduny_exportlist_columns">
+
+        <!-- Checkbox column for mass actions -->
+        <selectionsColumn name="ids" sortOrder="10">
+            <settings>
+                <indexField>entity_id</indexField>
+            </settings>
+        </selectionsColumn>
+
+        <!-- ID Column -->
+        <column name="entity_id" sortOrder="20">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">ID</label>
+                <sorting>asc</sorting>
+            </settings>
+        </column>
+
+        <!-- Name Column -->
+        <column name="name" sortOrder="30">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Name</label>
+            </settings>
+        </column>
+
+        <!-- Slug Column -->
+        <column name="slug" sortOrder="40">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Slug</label>
+            </settings>
+        </column>
+
+        <!-- Status Filter Column -->
+        <column name="status_filter" sortOrder="50" component="Magento_Ui/js/grid/columns/select">
+            <settings>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Status Filter</label>
+                <options class="UnusualDope\Uduny\Ui\Source\StatusFilter"/>
+            </settings>
+        </column>
+
+        <!-- Stock Filter Column -->
+        <column name="stock_filter" sortOrder="60" component="Magento_Ui/js/grid/columns/select">
+            <settings>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Stock Filter</label>
+                <options class="UnusualDope\Uduny\Ui\Source\StockFilter"/>
+            </settings>
+        </column>
+
+        <!-- Store ID Column -->
+        <column name="store_id" sortOrder="70" class="Magento\Store\Ui\Component\Listing\Column\Store">
+            <settings>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Store</label>
+            </settings>
+        </column>
+
+        <!-- Is Active Column -->
+        <column name="is_active" sortOrder="80" component="Magento_Ui/js/grid/columns/select">
+            <settings>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Active</label>
+                <options class="Magento\Config\Model\Config\Source\Yesno"/>
+            </settings>
+        </column>
+
+        <!-- Created At Column -->
+        <column name="created_at" sortOrder="90" class="Magento\Ui\Component\Listing\Columns\Date">
+            <settings>
+                <filter>dateRange</filter>
+                <dataType>date</dataType>
+                <label translate="true">Created</label>
+            </settings>
+        </column>
+
+        <!-- Action Column (Edit/Delete) -->
+        <actionsColumn name="actions" class="UnusualDope\Uduny\Ui\Component\Listing\Column\ExportListActions" sortOrder="200">
+            <settings>
+                <indexField>entity_id</indexField>
+            </settings>
+        </actionsColumn>
+
+    </columns>
+
+</listing>
+

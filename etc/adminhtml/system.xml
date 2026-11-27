@@ -1,0 +1,258 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * System Configuration
+ *
+ * This file defines what appears in Admin → Stores → Configuration
+ *
+ * Structure hierarchy:
+ *   Tab → Section → Group → Field
+ *
+ * Each element has:
+ *   - id: unique identifier (used in config path)
+ *   - translate: which attributes can be translated
+ *   - sortOrder: display order (lower = higher position)
+ *   - showInDefault/showInWebsite/showInStore: visibility scopes
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+
+    <system>
+        <!--
+            TAB: The main category in the left sidebar
+            This creates "UNUSUALDOPE" tab in Configuration
+        -->
+        <tab id="unusualdope" translate="label" sortOrder="999">
+            <label>UnusualDope</label>
+        </tab>
+
+        <!--
+            SECTION: A page within the tab
+            This creates "Uduny Settings" under the UnusualDope tab
+        -->
+        <section id="uduny"
+                 translate="label"
+                 sortOrder="10"
+                 showInDefault="1"
+                 showInWebsite="1"
+                 showInStore="1">
+            <label>Uduny Settings</label>
+            <tab>unusualdope</tab>
+            <resource>UnusualDope_Uduny::config</resource>
+
+            <!--
+                GROUP 1: General Settings
+                Contains: Enable, Token, Whitelist, Modes
+            -->
+            <group id="general"
+                   translate="label"
+                   sortOrder="10"
+                   showInDefault="1"
+                   showInWebsite="1"
+                   showInStore="1">
+                <label>General Settings</label>
+
+                <!-- Field: Enable Module -->
+                <field id="enabled"
+                       translate="label comment"
+                       type="select"
+                       sortOrder="10"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
+                    <label>Enable Module</label>
+                    <comment>Enable or disable the Uduny integration</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <!-- Field: Master Token -->
+                <field id="master_token"
+                       translate="label comment"
+                       type="text"
+                       sortOrder="20"
+                       showInDefault="1"
+                       showInWebsite="0"
+                       showInStore="0">
+                    <label>Master Token</label>
+                    <comment>Authentication token for Uduny server. Keep this secret!</comment>
+                    <validate>required-entry</validate>
+                </field>
+
+                <!-- Field: Server Whitelist -->
+                <field id="server_whitelist"
+                       translate="label comment"
+                       type="textarea"
+                       sortOrder="30"
+                       showInDefault="1"
+                       showInWebsite="0"
+                       showInStore="0">
+                    <label>Server Whitelist</label>
+                    <comment><![CDATA[
+                        IP addresses allowed to access the export endpoint.<br/>
+                        One IP per line. Leave empty to disable whitelist (allow all).
+                    ]]></comment>
+                </field>
+
+                <!-- Field: Production Mode -->
+                <field id="production_mode"
+                       translate="label comment"
+                       type="select"
+                       sortOrder="40"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
+                    <label>Production Mode</label>
+                    <comment>When enabled, the search script runs on all pages. When disabled, only works with ?uduny_test=1 parameter.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <!-- Field: Debug Mode -->
+                <field id="debug_mode"
+                       translate="label comment"
+                       type="select"
+                       sortOrder="50"
+                       showInDefault="1"
+                       showInWebsite="0"
+                       showInStore="0">
+                    <label>Debug Mode</label>
+                    <comment>Enable logging for troubleshooting. Logs are stored in var/log/uduny/</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+            </group>
+
+            <!--
+                GROUP 2: Frontend Settings
+                Contains: Script URL, Image settings
+            -->
+            <group id="frontend"
+                   translate="label"
+                   sortOrder="20"
+                   showInDefault="1"
+                   showInWebsite="1"
+                   showInStore="1">
+                <label>Frontend Settings</label>
+
+                <!-- Field: Script URL -->
+                <field id="script_url"
+                       translate="label comment"
+                       type="text"
+                       sortOrder="10"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
+                    <label>Script URL</label>
+                    <comment>Full URL of UdSearch JS file to embed (e.g. https://search.yourstore.com/js/search.js)</comment>
+                    <validate>validate-url</validate>
+                </field>
+
+                <!-- Field: Search Base URL -->
+                <field id="search_url"
+                       translate="label comment"
+                       type="text"
+                       sortOrder="12"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
+                    <label>UdSearch Base URL</label>
+                    <comment>Optional base URL for window.UdunySearch.url (e.g. https://search.yourstore.com). Leave empty to auto-derive from Script URL.</comment>
+                    <validate>validate-url</validate>
+                </field>
+
+                <!-- Field: Trigger Clicked Selectors -->
+                <field id="trigger_clicked"
+                       translate="label comment"
+                       type="text"
+                       sortOrder="14"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
+                    <label>Click Trigger Selectors</label>
+                    <comment>Optional comma-separated CSS selectors that open search on click (e.g. #search-button, .action.search)</comment>
+                </field>
+
+                <!-- Field: Trigger Typing Selectors -->
+                <field id="trigger_typing"
+                       translate="label comment"
+                       type="text"
+                       sortOrder="16"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
+                    <label>Typing Trigger Selectors</label>
+                    <comment>Comma-separated CSS selectors that open search on typing (default: #search)</comment>
+                </field>
+
+                <!-- Field: Image Width -->
+                <field id="image_width"
+                       translate="label comment"
+                       type="text"
+                       sortOrder="20"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
+                    <label>Export Image Width</label>
+                    <comment>Width of product images sent to Uduny (in pixels)</comment>
+                    <validate>validate-digits</validate>
+                </field>
+
+                <!-- Field: Image Height -->
+                <field id="image_height"
+                       translate="label comment"
+                       type="text"
+                       sortOrder="30"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
+                    <label>Export Image Height</label>
+                    <comment>Height of product images sent to Uduny (in pixels)</comment>
+                    <validate>validate-digits</validate>
+                </field>
+
+            </group>
+
+            <!--
+                GROUP 3: Export & Price List Settings
+            -->
+            <group id="export"
+                   translate="label"
+                   sortOrder="30"
+                   showInDefault="1"
+                   showInWebsite="1"
+                   showInStore="1">
+                <label>Export &amp; Multi-Currency Settings</label>
+
+                <field id="pricelist_mode"
+                       translate="label comment"
+                       type="select"
+                       sortOrder="10"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1">
+                    <label>Multi-Price / Multi-Currency Export</label>
+                    <comment><![CDATA[
+                        Auto-detect omits the <code>prices</code> array on single-currency/single-location stores and automatically includes it when multiple currencies or store views/websites are configured. Choose "Always" to emit a 1-element <code>prices</code> array even for a single currency/location.
+                    ]]></comment>
+                    <source_model>UnusualDope\Uduny\Model\Config\Source\PricelistMode</source_model>
+                </field>
+
+                <field id="currency_location_map"
+                       translate="label comment"
+                       type="textarea"
+                       sortOrder="20"
+                       showInDefault="1"
+                       showInWebsite="0"
+                       showInStore="0">
+                    <label>Currency to Location Overrides</label>
+                    <comment><![CDATA[
+                        Optional mapping for additional currencies on a single store view (one per line, e.g. <code>EUR=IT</code>, <code>USD=US</code>, <code>GBP=GB</code>). Leave empty to use store default country and standard ISO defaults.
+                    ]]></comment>
+                </field>
+            </group>
+
+        </section>
+    </system>
+
+</config>
+

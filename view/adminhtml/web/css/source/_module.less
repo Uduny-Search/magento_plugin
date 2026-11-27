@@ -1,0 +1,28 @@
+/**
+ * Uduny Admin Menu Icon Styles
+ *
+ * Custom icon for the Uduny menu in Magento Admin sidebar
+ * Menu ID: UnusualDope_Uduny::uduny generates class: item-unusualdope-uduny-uduny
+ */
+
+.admin__menu {
+    // Target the Uduny menu item by its generated ID class
+    .item-unusualdope-uduny-uduny {
+        > a {
+            &:before {
+                content: '' !important;
+                background-image: url('../images/uduny-icon.svg') !important;
+                background-size: 20px 20px !important;
+                background-repeat: no-repeat !important;
+                background-position: center !important;
+            }
+        }
+
+        // Active/hover state - brighten the icon
+        &._active > a:before,
+        &:hover > a:before {
+            filter: brightness(1.3);
+        }
+    }
+}
+

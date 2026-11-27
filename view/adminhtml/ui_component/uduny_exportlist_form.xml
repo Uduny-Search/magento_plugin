@@ -1,0 +1,279 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * UI Component: Export List Form
+ *
+ * This defines the admin form for creating/editing Export Lists.
+ */
+-->
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">uduny_exportlist_form.uduny_exportlist_form_data_source</item>
+        </item>
+        <item name="label" xsi:type="string" translate="true">Export List Information</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
+    </argument>
+
+    <settings>
+        <buttons>
+            <!-- Back Button -->
+            <button name="back">
+                <url path="*/*/"/>
+                <class>back</class>
+                <label translate="true">Back</label>
+            </button>
+            <!-- Delete Button (shown only when editing) -->
+            <button name="delete" class="UnusualDope\Uduny\Block\Adminhtml\ExportList\Edit\DeleteButton"/>
+            <!-- Save Button -->
+            <button name="save" class="UnusualDope\Uduny\Block\Adminhtml\ExportList\Edit\SaveButton"/>
+            <!-- Save and Continue Button -->
+            <button name="save_and_continue" class="UnusualDope\Uduny\Block\Adminhtml\ExportList\Edit\SaveAndContinueButton"/>
+        </buttons>
+        <namespace>uduny_exportlist_form</namespace>
+        <dataScope>data</dataScope>
+        <deps>
+            <dep>uduny_exportlist_form.uduny_exportlist_form_data_source</dep>
+        </deps>
+    </settings>
+
+    <!--
+        DATA SOURCE: Provides form data
+    -->
+    <dataSource name="uduny_exportlist_form_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="uduny/exportlist/save"/>
+        </settings>
+        <dataProvider class="UnusualDope\Uduny\Ui\DataProvider\ExportList\FormDataProvider"
+                      name="uduny_exportlist_form_data_source">
+            <settings>
+                <requestFieldName>entity_id</requestFieldName>
+                <primaryFieldName>entity_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+
+    <!--
+        FIELDSET: General Information
+    -->
+    <fieldset name="general" sortOrder="10">
+        <settings>
+            <collapsible>false</collapsible>
+            <label translate="true">General Information</label>
+        </settings>
+
+        <!-- Hidden Entity ID -->
+        <field name="entity_id" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <visible>false</visible>
+            </settings>
+        </field>
+
+        <!-- Name Field -->
+        <field name="name" formElement="input" sortOrder="10">
+            <settings>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+                <dataType>text</dataType>
+                <label translate="true">Name</label>
+                <notice translate="true">Internal name for reference</notice>
+            </settings>
+        </field>
+
+        <!-- Slug Field -->
+        <field name="slug" formElement="input" sortOrder="20">
+            <settings>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                    <rule name="validate-identifier" xsi:type="boolean">true</rule>
+                </validation>
+                <dataType>text</dataType>
+                <label translate="true">URL Slug</label>
+                <notice translate="true">Used in export URL: /uduny/export/{slug}</notice>
+            </settings>
+        </field>
+
+        <!-- Is Active -->
+        <field name="is_active" formElement="checkbox" sortOrder="30">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="number">1</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Active</label>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true" xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+
+        <!-- Store View -->
+        <field name="store_id" formElement="select" sortOrder="40">
+            <settings>
+                <dataType>int</dataType>
+                <label translate="true">Store View</label>
+                <notice translate="true">Select store view for this export (0 = all stores)</notice>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Magento\Store\Ui\Component\Listing\Column\Store\Options"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+
+    </fieldset>
+
+    <!--
+        FIELDSET: Product Filters
+    -->
+    <fieldset name="filters" sortOrder="20">
+        <settings>
+            <collapsible>true</collapsible>
+            <opened>true</opened>
+            <label translate="true">Product Filters</label>
+        </settings>
+
+        <!-- Status Filter -->
+        <field name="status_filter" formElement="select" sortOrder="10">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Product Status</label>
+                <notice translate="true">Filter products by enabled/disabled status</notice>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="UnusualDope\Uduny\Ui\Source\StatusFilter"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+
+        <!-- Stock Filter -->
+        <field name="stock_filter" formElement="select" sortOrder="20">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Stock Availability</label>
+                <notice translate="true">Filter products by stock status</notice>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="UnusualDope\Uduny\Ui\Source\StockFilter"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+
+        <!-- Include Categories (Category Tree Component) -->
+        <field name="category_ids" component="Magento_Ui/js/form/element/ui-select" formElement="select" sortOrder="30">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filterOptions" xsi:type="boolean">true</item>
+                    <item name="multiple" xsi:type="boolean">true</item>
+                    <item name="showCheckbox" xsi:type="boolean">true</item>
+                    <item name="disableLabel" xsi:type="boolean">true</item>
+                    <item name="chipsEnabled" xsi:type="boolean">true</item>
+                    <item name="levelsVisibility" xsi:type="number">1</item>
+                    <item name="elementTmpl" xsi:type="string">ui/grid/filters/elements/ui-select</item>
+                    <item name="listens" xsi:type="array">
+                        <item name="newOption" xsi:type="string">toggleOptionSelected</item>
+                    </item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Include Categories</label>
+                <notice translate="true">Select categories to include in the export (leave empty for all categories)</notice>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="UnusualDope\Uduny\Ui\Source\CategoryTree"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+
+        <!-- Exclude Categories (Category Tree Component) -->
+        <field name="exclude_category_ids" component="Magento_Ui/js/form/element/ui-select" formElement="select" sortOrder="35">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filterOptions" xsi:type="boolean">true</item>
+                    <item name="multiple" xsi:type="boolean">true</item>
+                    <item name="showCheckbox" xsi:type="boolean">true</item>
+                    <item name="disableLabel" xsi:type="boolean">true</item>
+                    <item name="chipsEnabled" xsi:type="boolean">true</item>
+                    <item name="levelsVisibility" xsi:type="number">1</item>
+                    <item name="elementTmpl" xsi:type="string">ui/grid/filters/elements/ui-select</item>
+                    <item name="listens" xsi:type="array">
+                        <item name="newOption" xsi:type="string">toggleOptionSelected</item>
+                    </item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Exclude Categories</label>
+                <notice translate="true">Select categories to exclude (products in ANY selected category will be excluded)</notice>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="UnusualDope\Uduny\Ui\Source\CategoryTree"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+
+        <!-- Brands / Manufacturers (Searchable Multiselect) -->
+        <field name="brand_ids" component="Magento_Ui/js/form/element/ui-select" formElement="select" sortOrder="40">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filterOptions" xsi:type="boolean">true</item>
+                    <item name="multiple" xsi:type="boolean">true</item>
+                    <item name="showCheckbox" xsi:type="boolean">true</item>
+                    <item name="disableLabel" xsi:type="boolean">true</item>
+                    <item name="chipsEnabled" xsi:type="boolean">true</item>
+                    <item name="levelsVisibility" xsi:type="number">1</item>
+                    <item name="elementTmpl" xsi:type="string">ui/grid/filters/elements/ui-select</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Brands / Manufacturers</label>
+                <notice translate="true">Search and select brands to include (leave empty for all brands)</notice>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="UnusualDope\Uduny\Ui\Source\BrandOptions"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+
+    </fieldset>
+
+</form>
+

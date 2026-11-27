@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Access Control List (ACL)
+ *
+ * This file defines ALL PERMISSIONS for your module.
+ *
+ * Structure:
+ *   Magento_Backend::admin (root)
+ *   ├─ Magento_Backend::stores (for config)
+ *   │  └─ ... → UnusualDope_Uduny::config
+ *   └─ UnusualDope_Uduny::uduny (our menu)
+ *      ├─ UnusualDope_Uduny::exportlist
+ *      └─ UnusualDope_Uduny::debug
+ *
+ * In Admin → System → User Roles, admins can grant/revoke these permissions
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+
+                <!--
+                    MENU PERMISSIONS
+                    These control who can see the Uduny menu in sidebar
+                -->
+                <resource id="UnusualDope_Uduny::uduny"
+                          title="Uduny"
+                          translate="title"
+                          sortOrder="100">
+
+                    <!-- Permission: Export Lists -->
+                    <resource id="UnusualDope_Uduny::exportlist"
+                              title="Manage Export Lists"
+                              translate="title"
+                              sortOrder="10"/>
+
+                    <!-- Permission: Debug Logs -->
+                    <resource id="UnusualDope_Uduny::debug"
+                              title="View Debug Logs"
+                              translate="title"
+                              sortOrder="20"/>
+
+                </resource>
+
+                <!--
+                    CONFIG PERMISSION
+                    This controls who can access Stores → Configuration → Uduny
+                -->
+                <resource id="Magento_Backend::stores">
+                    <resource id="Magento_Backend::stores_settings">
+                        <resource id="Magento_Config::config">
+                            <resource id="UnusualDope_Uduny::config"
+                                      title="Uduny Configuration"
+                                      translate="title"
+                                      sortOrder="100"/>
+                        </resource>
+                    </resource>
+                </resource>
+
+            </resource>
+        </resources>
+    </acl>
+
+</config>

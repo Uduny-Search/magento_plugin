@@ -1,0 +1,22 @@
+/**
+ * Uduny Admin Menu Icon Styles
+ * Custom purple lightning bolt icon for the Uduny menu
+ */
+
+/* Target menu item - Magento generates: item-unusualdope-uduny-uduny */
+.admin__menu .item-unusualdope-uduny-uduny > a:before,
+.admin__menu [data-ui-id="menu-unusualdope-uduny-uduny"] > a:before,
+.admin__menu .level-0.item-unusualdope-uduny-uduny > a:before {
+    content: '' !important;
+    background-image: url('../images/uduny-icon.svg') !important;
+    background-size: 20px 20px !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
+}
+
+/* Hover and active states */
+.admin__menu .item-unusualdope-uduny-uduny._active > a:before,
+.admin__menu .item-unusualdope-uduny-uduny:hover > a:before {
+    filter: brightness(1.3);
+}
+

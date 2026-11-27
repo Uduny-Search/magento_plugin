@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Layout for Export List Grid Page
+ *
+ * This replaces the placeholder with a UI Component grid.
+ * The uiComponent tag loads the grid defined in ui_component/uduny_exportlist_listing.xml
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+
+    <body>
+        <referenceContainer name="content">
+            <!-- Remove the old placeholder -->
+            <uiComponent name="uduny_exportlist_listing"/>
+        </referenceContainer>
+    </body>
+
+</page>

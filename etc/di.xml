@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Uduny Module - Dependency Injection Configuration
+ *
+ * This file tells Magento how to wire up dependencies.
+ *
+ * TABLE OF CONTENTS:
+ *   1. EXPORT LIST - Interface preferences & grid config
+ *   2. SESSION TRACKING - Interface preferences
+ *   3. ROUTING - Custom URL router
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+
+    <!-- ╔═══════════════════════════════════════════════════════════════════════╗
+         ║                    SECTION 1: EXPORT LIST                             ║
+         ╚═══════════════════════════════════════════════════════════════════════╝ -->
+
+    <!-- Interface → Implementation mapping -->
+    <preference for="UnusualDope\Uduny\Api\Data\ExportListInterface"
+                type="UnusualDope\Uduny\Model\ExportList"/>
+
+    <preference for="UnusualDope\Uduny\Api\ExportListRepositoryInterface"
+                type="UnusualDope\Uduny\Model\ExportListRepository"/>
+
+    <!-- Admin Grid Collection -->
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="uduny_exportlist_listing_data_source" xsi:type="string">
+                    UnusualDope\Uduny\Model\ResourceModel\ExportList\Grid\Collection
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Virtual Type for Grid Collection -->
+    <virtualType name="UnusualDope\Uduny\Model\ResourceModel\ExportList\Grid\Collection"
+                 type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">uduny_export_list</argument>
+            <argument name="resourceModel" xsi:type="string">UnusualDope\Uduny\Model\ResourceModel\ExportList</argument>
+        </arguments>
+    </virtualType>
+
+
+    <!-- ╔═══════════════════════════════════════════════════════════════════════╗
+         ║                   SECTION 2: SESSION TRACKING                         ║
+         ╚═══════════════════════════════════════════════════════════════════════╝ -->
+
+    <!-- Interface → Implementation mapping -->
+    <preference for="UnusualDope\Uduny\Api\Data\SessionTrackingInterface"
+                type="UnusualDope\Uduny\Model\SessionTracking"/>
+
+    <preference for="UnusualDope\Uduny\Api\SessionTrackingRepositoryInterface"
+                type="UnusualDope\Uduny\Model\SessionTrackingRepository"/>
+
+</config>

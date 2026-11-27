@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Frontend Routes Configuration
+ *
+ * This file defines frontend (storefront) URL routing.
+ *
+ * URL: /uduny/export/{slug}
+ *   - "uduny" = frontName (defined below)
+ *   - "export" = controller folder
+ *   - slug = passed as parameter
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+
+    <router id="standard">
+        <route id="uduny" frontName="uduny">
+            <module name="UnusualDope_Uduny"/>
+        </route>
+    </router>
+
+</config>
+

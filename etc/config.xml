@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Default Configuration Values
+ *
+ * This file sets the default values for your configuration fields.
+ * These are used when no value has been saved in the database yet.
+ *
+ * The path structure matches system.xml:
+ *   <section_id>/<group_id>/<field_id>
+ *
+ * Example: uduny/general/enabled
+ *   - uduny = section id
+ *   - general = group id
+ *   - enabled = field id
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+
+    <default>
+        <!-- Section: uduny -->
+        <uduny>
+            <!-- Group: general -->
+            <general>
+                <enabled>0</enabled>                    <!-- Disabled by default -->
+                <master_token></master_token>           <!-- Empty, must be set by admin -->
+                <server_whitelist></server_whitelist>   <!-- Empty = no whitelist -->
+                <production_mode>0</production_mode>    <!-- Test mode by default -->
+                <debug_mode>0</debug_mode>              <!-- Debug off by default -->
+            </general>
+
+            <!-- Group: frontend -->
+            <frontend>
+                <script_url></script_url>               <!-- Must be set by admin -->
+                <search_url></search_url>               <!-- Optional; derived from script_url if empty -->
+                <trigger_clicked></trigger_clicked>     <!-- Optional comma-separated click selectors -->
+                <trigger_typing>#search</trigger_typing> <!-- Magento default search input -->
+                <image_width>300</image_width>          <!-- 300px default -->
+                <image_height>300</image_height>        <!-- 300px default -->
+            </frontend>
+
+            <!-- Group: export -->
+            <export>
+                <pricelist_mode>auto</pricelist_mode>
+                <currency_location_map></currency_location_map>
+            </export>
+        </uduny>
+    </default>
+
+</config>
+
